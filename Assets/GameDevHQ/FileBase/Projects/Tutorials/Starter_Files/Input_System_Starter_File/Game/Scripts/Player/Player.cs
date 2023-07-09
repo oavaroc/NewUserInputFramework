@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Game.Scripts.LiveObjects;
 using Cinemachine;
+using UnityEngine.InputSystem;
 
 namespace Game.Scripts.Player
 {
     [RequireComponent(typeof(CharacterController))]
     public class Player : MonoBehaviour
     {
+        private GameInputs _inputs;
         private CharacterController _controller;
         private Animator _anim;
         [SerializeField]
@@ -33,10 +35,11 @@ namespace Game.Scripts.Player
             Forklift.onDriveModeEntered += HidePlayer;
             Drone.OnEnterFlightMode += ReleasePlayerControl;
             Drone.onExitFlightmode += ReturnPlayerControl;
-        } 
+        }
 
         private void Start()
         {
+            InitializeInputs();
             _controller = GetComponent<CharacterController>();
 
             if (_controller == null)
@@ -48,6 +51,14 @@ namespace Game.Scripts.Player
                 Debug.Log("Failed to connect the Animator");
         }
 
+        private void InitializeInputs()
+        {
+            _inputs = new GameInputs();
+            _inputs.Player.Enable();
+
+        }
+
+
         private void Update()
         {
             if (_canMove == true)
@@ -58,13 +69,9 @@ namespace Game.Scripts.Player
         private void CalcutateMovement()
         {
             _playerGrounded = _controller.isGrounded;
-            float h = Input.GetAxisRaw("Horizontal");
-            float v = Input.GetAxisRaw("Vertical");
 
-            transform.Rotate(transform.up, h);
-
-            var direction = transform.forward * v;
-            var velocity = direction * _speed;
+            transform.Rotate(transform.up, _inputs.Player.Movement.ReadValue<Vector2>().x);
+            var velocity = transform.forward * _inputs.Player.Movement.ReadValue<Vector2>().y * _speed;
 
 
             _anim.SetFloat("Speed", Mathf.Abs(velocity.magnitude));
@@ -76,14 +83,14 @@ namespace Game.Scripts.Player
             {
                 velocity.y += -20f * Time.deltaTime;
             }
-            
-            _controller.Move(velocity * Time.deltaTime);                      
+
+            _controller.Move(velocity * Time.deltaTime);
 
         }
 
         private void InteractableZone_onZoneInteractionComplete(InteractableZone zone)
         {
-            switch(zone.GetZoneID())
+            switch (zone.GetZoneID())
             {
                 case 1: //place c4
                     _detonator.Show();
@@ -111,7 +118,7 @@ namespace Game.Scripts.Player
         {
             _model.SetActive(false);
         }
-               
+
         private void TriggerExplosive()
         {
             _detonator.TriggerExplosion();
