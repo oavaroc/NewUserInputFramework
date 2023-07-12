@@ -66,11 +66,16 @@ namespace Game.Scripts.LiveObjects
 
         private void InteractableZone_onHoldStarted(int zoneID)
         {
+            Debug.Log("laptop:69");
             if (zoneID == 3 && _hacked == false) //Hacking terminal
             {
+                Debug.Log("laptop:72");
                 _progressBar.gameObject.SetActive(true);
+                Debug.Log("laptop:74");
                 StartCoroutine(HackingRoutine());
+                Debug.Log("laptop:76");
                 onHackComplete?.Invoke();
+                Debug.Log("laptop:78");
             }
         }
 
@@ -80,7 +85,7 @@ namespace Game.Scripts.LiveObjects
             {
                 if (_hacked == true)
                     return;
-
+                Debug.Log("88");
                 StopAllCoroutines();
                 _progressBar.gameObject.SetActive(false);
                 _progressBar.value = 0;
@@ -91,20 +96,27 @@ namespace Game.Scripts.LiveObjects
         
         IEnumerator HackingRoutine()
         {
+            Debug.Log("99");
             while (_progressBar.value < 1)
             {
+                Debug.Log("102");
                 _progressBar.value += Time.deltaTime / _hackTime;
+                Debug.Log("103");
                 yield return new WaitForEndOfFrame();
             }
 
             //successfully hacked
+            Debug.Log("109");
             _hacked = true;
+            Debug.Log("111");
             _interactableZone.CompleteTask(3);
 
             //hide progress bar
+            Debug.Log("115");
             _progressBar.gameObject.SetActive(false);
 
             //enable Vcam1
+            Debug.Log("119");
             _cameras[0].Priority = 11;
         }
         
