@@ -23,6 +23,7 @@ namespace Game.Scripts.LiveObjects
 
         }
 
+
         private enum ZoneType
         {
             Collectable,
@@ -139,7 +140,7 @@ namespace Game.Scripts.LiveObjects
             if (_inZone == true)
             {
 
-                if (_inputs.Player.Interact.IsPressed() && _keyState != KeyState.PressHold)
+                if (_inputs.Player.Interact.WasPressedThisFrame() && _keyState != KeyState.PressHold)
                 {
                     //press
                     switch (_zoneType)
@@ -178,7 +179,7 @@ namespace Game.Scripts.LiveObjects
                     }
                 }
                 
-                if (_inputs.Player.Interact.WasPerformedThisFrame() && _keyState == KeyState.PressHold)
+                if (_inputs.Player.Interact.WasReleasedThisFrame() && _keyState == KeyState.PressHold)
                 {
                     Debug.Log("183");
                     _inHoldState = false;
