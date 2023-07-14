@@ -9,6 +9,7 @@ namespace Game.Scripts.LiveObjects
 {
     public class Laptop : MonoBehaviour
     {
+        private GameInputs _inputs;
         [SerializeField]
         private Slider _progressBar;
         [SerializeField]
@@ -27,13 +28,20 @@ namespace Game.Scripts.LiveObjects
         {
             InteractableZone.onHoldStarted += InteractableZone_onHoldStarted;
             InteractableZone.onHoldEnded += InteractableZone_onHoldEnded;
+            InitializeInputs();
+        }
+        private void InitializeInputs()
+        {
+            _inputs = new GameInputs();
+            _inputs.Player.Enable();
+
         }
 
         private void Update()
         {
             if (_hacked == true)
             {
-                if (Input.GetKeyDown(KeyCode.E))
+                if (_inputs.Player.Interact.triggered)
                 {
                     var previous = _activeCamera;
                     _activeCamera++;
@@ -47,7 +55,7 @@ namespace Game.Scripts.LiveObjects
                     _cameras[previous].Priority = 9;
                 }
 
-                if (Input.GetKeyDown(KeyCode.Escape))
+                if (_inputs.Player.Escape.triggered)
                 {
                     _hacked = false;
                     onHackEnded?.Invoke();

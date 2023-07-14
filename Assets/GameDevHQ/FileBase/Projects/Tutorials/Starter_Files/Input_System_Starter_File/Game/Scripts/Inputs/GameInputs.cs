@@ -44,6 +44,15 @@ public partial class @GameInputs : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Escape"",
+                    ""type"": ""Button"",
+                    ""id"": ""9a0588ca-5583-4457-bcf1-491e357b7248"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -112,6 +121,17 @@ public partial class @GameInputs : IInputActionCollection2, IDisposable
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dc2dc1cb-5f87-4949-95f6-03ea4296c66c"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Escape"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -127,6 +147,15 @@ public partial class @GameInputs : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Escape"",
+                    ""type"": ""Button"",
+                    ""id"": ""fa4f8621-1a62-4289-8d5d-f50e1968d370"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -206,6 +235,17 @@ public partial class @GameInputs : IInputActionCollection2, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""44044c51-65cc-42eb-8ad4-2ca7539c4faa"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Escape"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -235,6 +275,15 @@ public partial class @GameInputs : IInputActionCollection2, IDisposable
                     ""name"": ""LiftDown"",
                     ""type"": ""Button"",
                     ""id"": ""2c59fc13-92c7-4e71-a355-521a1b719825"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Escape"",
+                    ""type"": ""Button"",
+                    ""id"": ""bcb86672-bf44-4ce1-85ad-bf430e536285"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -318,6 +367,17 @@ public partial class @GameInputs : IInputActionCollection2, IDisposable
                     ""action"": ""LiftDown"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3b8e02b2-8aaf-469b-871d-2d21f2b0b5c1"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Escape"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -328,14 +388,17 @@ public partial class @GameInputs : IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
+        m_Player_Escape = m_Player.FindAction("Escape", throwIfNotFound: true);
         // Drone
         m_Drone = asset.FindActionMap("Drone", throwIfNotFound: true);
         m_Drone_Movement = m_Drone.FindAction("Movement", throwIfNotFound: true);
+        m_Drone_Escape = m_Drone.FindAction("Escape", throwIfNotFound: true);
         // ForkLift
         m_ForkLift = asset.FindActionMap("ForkLift", throwIfNotFound: true);
         m_ForkLift_Movement = m_ForkLift.FindAction("Movement", throwIfNotFound: true);
         m_ForkLift_LiftUp = m_ForkLift.FindAction("LiftUp", throwIfNotFound: true);
         m_ForkLift_LiftDown = m_ForkLift.FindAction("LiftDown", throwIfNotFound: true);
+        m_ForkLift_Escape = m_ForkLift.FindAction("Escape", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -397,12 +460,14 @@ public partial class @GameInputs : IInputActionCollection2, IDisposable
     private IPlayerActions m_PlayerActionsCallbackInterface;
     private readonly InputAction m_Player_Movement;
     private readonly InputAction m_Player_Interact;
+    private readonly InputAction m_Player_Escape;
     public struct PlayerActions
     {
         private @GameInputs m_Wrapper;
         public PlayerActions(@GameInputs wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_Player_Movement;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
+        public InputAction @Escape => m_Wrapper.m_Player_Escape;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -418,6 +483,9 @@ public partial class @GameInputs : IInputActionCollection2, IDisposable
                 @Interact.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
+                @Escape.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEscape;
+                @Escape.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEscape;
+                @Escape.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEscape;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -428,6 +496,9 @@ public partial class @GameInputs : IInputActionCollection2, IDisposable
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
+                @Escape.started += instance.OnEscape;
+                @Escape.performed += instance.OnEscape;
+                @Escape.canceled += instance.OnEscape;
             }
         }
     }
@@ -437,11 +508,13 @@ public partial class @GameInputs : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Drone;
     private IDroneActions m_DroneActionsCallbackInterface;
     private readonly InputAction m_Drone_Movement;
+    private readonly InputAction m_Drone_Escape;
     public struct DroneActions
     {
         private @GameInputs m_Wrapper;
         public DroneActions(@GameInputs wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_Drone_Movement;
+        public InputAction @Escape => m_Wrapper.m_Drone_Escape;
         public InputActionMap Get() { return m_Wrapper.m_Drone; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -454,6 +527,9 @@ public partial class @GameInputs : IInputActionCollection2, IDisposable
                 @Movement.started -= m_Wrapper.m_DroneActionsCallbackInterface.OnMovement;
                 @Movement.performed -= m_Wrapper.m_DroneActionsCallbackInterface.OnMovement;
                 @Movement.canceled -= m_Wrapper.m_DroneActionsCallbackInterface.OnMovement;
+                @Escape.started -= m_Wrapper.m_DroneActionsCallbackInterface.OnEscape;
+                @Escape.performed -= m_Wrapper.m_DroneActionsCallbackInterface.OnEscape;
+                @Escape.canceled -= m_Wrapper.m_DroneActionsCallbackInterface.OnEscape;
             }
             m_Wrapper.m_DroneActionsCallbackInterface = instance;
             if (instance != null)
@@ -461,6 +537,9 @@ public partial class @GameInputs : IInputActionCollection2, IDisposable
                 @Movement.started += instance.OnMovement;
                 @Movement.performed += instance.OnMovement;
                 @Movement.canceled += instance.OnMovement;
+                @Escape.started += instance.OnEscape;
+                @Escape.performed += instance.OnEscape;
+                @Escape.canceled += instance.OnEscape;
             }
         }
     }
@@ -472,6 +551,7 @@ public partial class @GameInputs : IInputActionCollection2, IDisposable
     private readonly InputAction m_ForkLift_Movement;
     private readonly InputAction m_ForkLift_LiftUp;
     private readonly InputAction m_ForkLift_LiftDown;
+    private readonly InputAction m_ForkLift_Escape;
     public struct ForkLiftActions
     {
         private @GameInputs m_Wrapper;
@@ -479,6 +559,7 @@ public partial class @GameInputs : IInputActionCollection2, IDisposable
         public InputAction @Movement => m_Wrapper.m_ForkLift_Movement;
         public InputAction @LiftUp => m_Wrapper.m_ForkLift_LiftUp;
         public InputAction @LiftDown => m_Wrapper.m_ForkLift_LiftDown;
+        public InputAction @Escape => m_Wrapper.m_ForkLift_Escape;
         public InputActionMap Get() { return m_Wrapper.m_ForkLift; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -497,6 +578,9 @@ public partial class @GameInputs : IInputActionCollection2, IDisposable
                 @LiftDown.started -= m_Wrapper.m_ForkLiftActionsCallbackInterface.OnLiftDown;
                 @LiftDown.performed -= m_Wrapper.m_ForkLiftActionsCallbackInterface.OnLiftDown;
                 @LiftDown.canceled -= m_Wrapper.m_ForkLiftActionsCallbackInterface.OnLiftDown;
+                @Escape.started -= m_Wrapper.m_ForkLiftActionsCallbackInterface.OnEscape;
+                @Escape.performed -= m_Wrapper.m_ForkLiftActionsCallbackInterface.OnEscape;
+                @Escape.canceled -= m_Wrapper.m_ForkLiftActionsCallbackInterface.OnEscape;
             }
             m_Wrapper.m_ForkLiftActionsCallbackInterface = instance;
             if (instance != null)
@@ -510,6 +594,9 @@ public partial class @GameInputs : IInputActionCollection2, IDisposable
                 @LiftDown.started += instance.OnLiftDown;
                 @LiftDown.performed += instance.OnLiftDown;
                 @LiftDown.canceled += instance.OnLiftDown;
+                @Escape.started += instance.OnEscape;
+                @Escape.performed += instance.OnEscape;
+                @Escape.canceled += instance.OnEscape;
             }
         }
     }
@@ -518,15 +605,18 @@ public partial class @GameInputs : IInputActionCollection2, IDisposable
     {
         void OnMovement(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnEscape(InputAction.CallbackContext context);
     }
     public interface IDroneActions
     {
         void OnMovement(InputAction.CallbackContext context);
+        void OnEscape(InputAction.CallbackContext context);
     }
     public interface IForkLiftActions
     {
         void OnMovement(InputAction.CallbackContext context);
         void OnLiftUp(InputAction.CallbackContext context);
         void OnLiftDown(InputAction.CallbackContext context);
+        void OnEscape(InputAction.CallbackContext context);
     }
 }

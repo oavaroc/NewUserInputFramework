@@ -65,7 +65,7 @@ namespace Game.Scripts.LiveObjects
             {
                 LiftControls();
                 CalcutateMovement();
-                if (Input.GetKeyDown(KeyCode.Escape))
+                if (_inputs.ForkLift.Escape.triggered)
                     ExitDriveMode();
             }
 
