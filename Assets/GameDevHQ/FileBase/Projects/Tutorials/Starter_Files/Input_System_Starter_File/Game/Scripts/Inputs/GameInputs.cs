@@ -106,7 +106,7 @@ public partial class @GameInputs : IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""2b4224af-4b2c-479e-bd10-45a47c073527"",
                     ""path"": ""<Keyboard>/e"",
-                    ""interactions"": ""Hold(duration=5)"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Interact"",

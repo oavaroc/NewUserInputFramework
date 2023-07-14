@@ -20,9 +20,85 @@ namespace Game.Scripts.LiveObjects
         {
             _inputs = new GameInputs();
             _inputs.Player.Enable();
+            _inputs.Player.Interact.started += Interact_started; 
+            _inputs.Player.Interact.canceled += Interact_canceled;
+            _inputs.Player.Interact.performed += Interact_performed;
 
         }
 
+        private void Interact_performed(InputAction.CallbackContext obj)
+        {
+            if (_inZone == true)
+            {
+                if (_keyState == KeyState.PressHold && _inHoldState == false)
+                {
+                    Debug.Log("168");
+                    _inHoldState = true;
+
+
+
+                    switch (_zoneType)
+                    {
+                        case ZoneType.HoldAction:
+                            PerformHoldAction();
+                            break;
+                    }
+                }
+            }
+        }
+
+        private void Interact_canceled(InputAction.CallbackContext obj)
+        {
+            if (_inZone == true)
+            {
+
+
+                if (_keyState == KeyState.PressHold)
+                {
+                    Debug.Log("183");
+                    _inHoldState = false;
+                    onHoldEnded?.Invoke(_zoneID);
+                }
+
+
+            }
+        }
+
+        private void Interact_started(InputAction.CallbackContext obj)
+        {
+            if (_inZone == true)
+            {
+
+                if (_keyState != KeyState.PressHold)
+                {
+                    //press
+                    switch (_zoneType)
+                    {
+                        case ZoneType.Collectable:
+                            if (_itemsCollected == false)
+                            {
+                                CollectItems();
+                                _itemsCollected = true;
+                                UIManager.Instance.DisplayInteractableZoneMessage(false);
+                            }
+                            break;
+
+                        case ZoneType.Action:
+                            if (_actionPerformed == false)
+                            {
+                                Debug.Log("IZ160");
+                                PerformAction();
+                                _actionPerformed = true;
+                                UIManager.Instance.DisplayInteractableZoneMessage(false);
+                            }
+                            break;
+                    }
+                }
+
+
+
+            }
+        }
 
         private enum ZoneType
         {
@@ -137,57 +213,6 @@ namespace Game.Scripts.LiveObjects
 
         private void Update()
         {
-            if (_inZone == true)
-            {
-
-                if (_inputs.Player.Interact.WasPressedThisFrame() && _keyState != KeyState.PressHold)
-                {
-                    //press
-                    switch (_zoneType)
-                    {
-                        case ZoneType.Collectable:
-                            if (_itemsCollected == false)
-                            {
-                                CollectItems();
-                                _itemsCollected = true;
-                                UIManager.Instance.DisplayInteractableZoneMessage(false);
-                            }
-                            break;
-
-                        case ZoneType.Action:
-                            if (_actionPerformed == false)
-                            {
-                                PerformAction();
-                                _actionPerformed = true;
-                                UIManager.Instance.DisplayInteractableZoneMessage(false);
-                            }
-                            break;
-                    }
-                }
-                else if (_inputs.Player.Interact.IsPressed() && _keyState == KeyState.PressHold && _inHoldState == false)
-                {
-                    Debug.Log("168");
-                    _inHoldState = true;
-
-                   
-
-                    switch (_zoneType)
-                    {                      
-                        case ZoneType.HoldAction:
-                            PerformHoldAction();
-                            break;           
-                    }
-                }
-                
-                if (_inputs.Player.Interact.WasReleasedThisFrame() && _keyState == KeyState.PressHold)
-                {
-                    Debug.Log("183");
-                    _inHoldState = false;
-                    onHoldEnded?.Invoke(_zoneID);
-                }
-
-               
-            }
         }
        
         private void CollectItems()
@@ -214,7 +239,7 @@ namespace Game.Scripts.LiveObjects
 
             if (_inventoryIcon != null)
                 UIManager.Instance.UpdateInventoryDisplay(_inventoryIcon);
-
+            
             onZoneInteractionComplete?.Invoke(this);
         }
 
