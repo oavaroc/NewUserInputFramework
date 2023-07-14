@@ -208,6 +208,118 @@ public partial class @GameInputs : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 }
             ]
+        },
+        {
+            ""name"": ""ForkLift"",
+            ""id"": ""892baa55-5de6-4bb9-a818-3c0e7a11a132"",
+            ""actions"": [
+                {
+                    ""name"": ""Movement"",
+                    ""type"": ""Value"",
+                    ""id"": ""d7362f5d-e74f-4276-8215-bb14e1a74d43"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""LiftUp"",
+                    ""type"": ""Button"",
+                    ""id"": ""bfcf440e-9391-4f97-9547-43cbf4881912"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LiftDown"",
+                    ""type"": ""Button"",
+                    ""id"": ""2c59fc13-92c7-4e71-a355-521a1b719825"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": ""WASD"",
+                    ""id"": ""f6a73911-7d61-4a2f-8556-0215eebbb055"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""16d91380-525c-4fd0-9bdc-7667cfbf0ce5"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""994ed946-1016-4f3a-b193-83b198478af2"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""7d05bbf3-a517-4f91-9b57-acf4a58ae717"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""796ea136-b48a-4607-8f42-bfeb99d45c60"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4177d27c-1b53-420a-bc64-8bae42296d67"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LiftUp"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""71dc40a8-ee2a-42f4-bfe5-f38ac455d0e3"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LiftDown"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -219,6 +331,11 @@ public partial class @GameInputs : IInputActionCollection2, IDisposable
         // Drone
         m_Drone = asset.FindActionMap("Drone", throwIfNotFound: true);
         m_Drone_Movement = m_Drone.FindAction("Movement", throwIfNotFound: true);
+        // ForkLift
+        m_ForkLift = asset.FindActionMap("ForkLift", throwIfNotFound: true);
+        m_ForkLift_Movement = m_ForkLift.FindAction("Movement", throwIfNotFound: true);
+        m_ForkLift_LiftUp = m_ForkLift.FindAction("LiftUp", throwIfNotFound: true);
+        m_ForkLift_LiftDown = m_ForkLift.FindAction("LiftDown", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -348,6 +465,55 @@ public partial class @GameInputs : IInputActionCollection2, IDisposable
         }
     }
     public DroneActions @Drone => new DroneActions(this);
+
+    // ForkLift
+    private readonly InputActionMap m_ForkLift;
+    private IForkLiftActions m_ForkLiftActionsCallbackInterface;
+    private readonly InputAction m_ForkLift_Movement;
+    private readonly InputAction m_ForkLift_LiftUp;
+    private readonly InputAction m_ForkLift_LiftDown;
+    public struct ForkLiftActions
+    {
+        private @GameInputs m_Wrapper;
+        public ForkLiftActions(@GameInputs wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Movement => m_Wrapper.m_ForkLift_Movement;
+        public InputAction @LiftUp => m_Wrapper.m_ForkLift_LiftUp;
+        public InputAction @LiftDown => m_Wrapper.m_ForkLift_LiftDown;
+        public InputActionMap Get() { return m_Wrapper.m_ForkLift; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(ForkLiftActions set) { return set.Get(); }
+        public void SetCallbacks(IForkLiftActions instance)
+        {
+            if (m_Wrapper.m_ForkLiftActionsCallbackInterface != null)
+            {
+                @Movement.started -= m_Wrapper.m_ForkLiftActionsCallbackInterface.OnMovement;
+                @Movement.performed -= m_Wrapper.m_ForkLiftActionsCallbackInterface.OnMovement;
+                @Movement.canceled -= m_Wrapper.m_ForkLiftActionsCallbackInterface.OnMovement;
+                @LiftUp.started -= m_Wrapper.m_ForkLiftActionsCallbackInterface.OnLiftUp;
+                @LiftUp.performed -= m_Wrapper.m_ForkLiftActionsCallbackInterface.OnLiftUp;
+                @LiftUp.canceled -= m_Wrapper.m_ForkLiftActionsCallbackInterface.OnLiftUp;
+                @LiftDown.started -= m_Wrapper.m_ForkLiftActionsCallbackInterface.OnLiftDown;
+                @LiftDown.performed -= m_Wrapper.m_ForkLiftActionsCallbackInterface.OnLiftDown;
+                @LiftDown.canceled -= m_Wrapper.m_ForkLiftActionsCallbackInterface.OnLiftDown;
+            }
+            m_Wrapper.m_ForkLiftActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Movement.started += instance.OnMovement;
+                @Movement.performed += instance.OnMovement;
+                @Movement.canceled += instance.OnMovement;
+                @LiftUp.started += instance.OnLiftUp;
+                @LiftUp.performed += instance.OnLiftUp;
+                @LiftUp.canceled += instance.OnLiftUp;
+                @LiftDown.started += instance.OnLiftDown;
+                @LiftDown.performed += instance.OnLiftDown;
+                @LiftDown.canceled += instance.OnLiftDown;
+            }
+        }
+    }
+    public ForkLiftActions @ForkLift => new ForkLiftActions(this);
     public interface IPlayerActions
     {
         void OnMovement(InputAction.CallbackContext context);
@@ -356,5 +522,11 @@ public partial class @GameInputs : IInputActionCollection2, IDisposable
     public interface IDroneActions
     {
         void OnMovement(InputAction.CallbackContext context);
+    }
+    public interface IForkLiftActions
+    {
+        void OnMovement(InputAction.CallbackContext context);
+        void OnLiftUp(InputAction.CallbackContext context);
+        void OnLiftDown(InputAction.CallbackContext context);
     }
 }

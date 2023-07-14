@@ -1,11 +1,13 @@
 using System;
 using UnityEngine;
 using Cinemachine;
+using UnityEngine.InputSystem;
 
 namespace Game.Scripts.LiveObjects
 {
     public class Forklift : MonoBehaviour
     {
+        private GameInputs _inputs;
         [SerializeField]
         private GameObject _lift, _steeringWheel, _leftWheel, _rightWheel, _rearWheels;
         [SerializeField]
@@ -26,6 +28,14 @@ namespace Game.Scripts.LiveObjects
         private void OnEnable()
         {
             InteractableZone.onZoneInteractionComplete += EnterDriveMode;
+            InitializeInputs();
+        }
+
+        private void InitializeInputs()
+        {
+            _inputs = new GameInputs();
+            _inputs.ForkLift.Enable();
+
         }
 
         private void EnterDriveMode(InteractableZone zone)
@@ -63,8 +73,8 @@ namespace Game.Scripts.LiveObjects
 
         private void CalcutateMovement()
         {
-            float h = Input.GetAxisRaw("Horizontal");
-            float v = Input.GetAxisRaw("Vertical");
+            float h = _inputs.ForkLift.Movement.ReadValue<Vector2>().x;
+            float v = _inputs.ForkLift.Movement.ReadValue<Vector2>().y;
             var direction = new Vector3(0, 0, v);
             var velocity = direction * _speed;
 
@@ -80,9 +90,9 @@ namespace Game.Scripts.LiveObjects
 
         private void LiftControls()
         {
-            if (Input.GetKey(KeyCode.R))
+            if (_inputs.ForkLift.LiftUp.IsPressed())
                 LiftUpRoutine();
-            else if (Input.GetKey(KeyCode.T))
+            else if (_inputs.ForkLift.LiftDown.IsPressed())
                 LiftDownRoutine();
         }
 
