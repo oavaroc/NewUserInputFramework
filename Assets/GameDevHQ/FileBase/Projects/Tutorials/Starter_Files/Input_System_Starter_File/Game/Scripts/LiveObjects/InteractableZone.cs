@@ -95,7 +95,7 @@ namespace Game.Scripts.LiveObjects
             if (_inZone == true)
             {
 
-                if (_keyState != KeyState.PressHold)
+                if (_keyState == KeyState.Press)
                 {
                     switch (_zoneType)
                     {
