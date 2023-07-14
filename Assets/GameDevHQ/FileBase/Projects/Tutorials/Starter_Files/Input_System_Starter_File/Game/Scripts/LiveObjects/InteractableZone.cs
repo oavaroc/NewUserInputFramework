@@ -11,6 +11,8 @@ namespace Game.Scripts.LiveObjects
     public class InteractableZone : MonoBehaviour
     {
         private GameInputs _inputs;
+        private float _pressStartTime;
+
         private void Start()
         {
             InitializeInputs();
@@ -49,6 +51,7 @@ namespace Game.Scripts.LiveObjects
 
         private void Interact_canceled(InputAction.CallbackContext obj)
         {
+            Debug.Log("cancelled called");
             if (_inZone == true)
             {
 
@@ -58,6 +61,29 @@ namespace Game.Scripts.LiveObjects
                     Debug.Log("183");
                     _inHoldState = false;
                     onHoldEnded?.Invoke(_zoneID);
+                }
+
+                if (_keyState == KeyState.PressOrHold)
+                {
+                    //press
+                    switch (_zoneType)
+                    {
+
+                        case ZoneType.Action:
+                            float pressDuration = Time.time - _pressStartTime;
+                            if (_actionPerformed == false)
+                            {
+                                Debug.Log("IZ160: "+ obj.duration);
+                                for(int i=0; i< Mathf.CeilToInt(pressDuration); i++)
+                                {
+                                    PerformAction();
+
+                                }
+                                _actionPerformed = true;
+                                UIManager.Instance.DisplayInteractableZoneMessage(false);
+                            }
+                            break;
+                    }
                 }
 
 
@@ -71,7 +97,6 @@ namespace Game.Scripts.LiveObjects
 
                 if (_keyState != KeyState.PressHold)
                 {
-                    //press
                     switch (_zoneType)
                     {
                         case ZoneType.Collectable:
@@ -83,15 +108,27 @@ namespace Game.Scripts.LiveObjects
                             }
                             break;
 
+
                         case ZoneType.Action:
                             if (_actionPerformed == false)
                             {
-                                Debug.Log("IZ160");
                                 PerformAction();
                                 _actionPerformed = true;
                                 UIManager.Instance.DisplayInteractableZoneMessage(false);
                             }
                             break;
+
+                    }
+                }
+                else if (_keyState == KeyState.PressOrHold)
+                {
+                    //press
+                    switch (_zoneType)
+                    {
+                        case ZoneType.Action:
+                            _pressStartTime = Time.time;
+                            break;
+
                     }
                 }
 
@@ -110,7 +147,8 @@ namespace Game.Scripts.LiveObjects
         private enum KeyState
         {
             Press,
-            PressHold
+            PressHold,
+            PressOrHold
         }
 
         [SerializeField]
